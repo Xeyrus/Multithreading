@@ -1,0 +1,10 @@
+1) Mutual Exclusion : Only one thread can have exclusive access to a resource.
+2) Hold and Wait : At least one thread is holding a resource and is waiting for another resource.
+3) Non-preemptive allocation : A resource is released only after the thread is done using it.
+4) Circular wait : A chain of at least 2 threads each one is holding one resource and waiting for another resource.
+
+
+To resolve deadlock:
+At least one of the condition is not met.
+Easiest way is to avoid circular wait.
+Simply acquire locks on their shared resources in same order.

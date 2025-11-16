@@ -1,6 +1,6 @@
-package resource_sharing;
+package resource_sharing.non_synchronized;
 
-public class RaceCondition {
+public class Main {
     public static void main(String[] args) throws InterruptedException {
         InventoryCounter ic = new InventoryCounter();
         IncrementingThread it = new IncrementingThread(ic);

@@ -1,4 +1,4 @@
-package resource_sharing;
+package resource_sharing.non_synchronized;
 
 public class DecrementingThread extends Thread{
 
