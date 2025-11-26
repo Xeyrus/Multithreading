@@ -1,0 +1,26 @@
+int initialValue = 0;
+AtomicInteger atomicInteger = new AtomicInteger(initialValue);
+
+// Increment the value atomically
+int newValue = atomicInteger.incrementAndGet();  // return the new value
+int oldValue = atomicInteger.getAndIncrement();  // return the previous value
+
+// Decrement the value atomically
+int newValue = atomicInteger.decrementAndGet();  // return the new value
+int oldValue = atomicInteger.getAndDecrement();  // return the previous value
+
+// Add a specific value atomically
+int delta = 5 or -5;
+int newValue = atomicInteger.addAndGet(delta);  // return the new value
+int oldValue = atomicInteger.getAndAdd(delta);  // return the previous value
+
+
+*** Pros of AtomicInteger:
+1) Simplicity
+2) No need for locks or syncronization
+3) No race conditions or data races
+
+*** Cons:
+1) Only the operation itself is atomic. There's still race condn bw 2 separate atomic operations
+Ex: atomicInteger.incrementAndGet()
+    atomicInteger.addAndGet(-5)          // Still race condition

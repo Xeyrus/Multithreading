@@ -1,0 +1,87 @@
+*** Older approach
+
+Object lockObject = new Object();
+Resource resource = new Resource();
+
+public void method(){
+    synchronized (lockObject) {     // locking starts
+        use(resource);
+    }                               // locking ends
+}
+
+============================================================
+
+*** ReentrantLock approach
+
+Lock lockObject = new ReentrantLock();
+Resource resource = new Resource();
+
+public void methods(){
+    lockObject.lock();          // locking starts
+    use(resource);
+    lockObject.unlock();        // locking ends
+}
+
+=> Disadvantages : 1) If you forget to unlock, then locked forever
+                   2) Even if unlock but if error thrown before unlock, then also problem of unlocking
+
+-------------------
+
+Better approach to lock and unlock
+
+public void methods(){
+    lockObject.lock();
+    try {
+        use(resource);
+    } finally {
+        lockObject.unlock();
+    }
+}
+
+================================================
+
+*** Advantages of ReentrantLock
+
+I>>ReentrantLock provides Query methods for testing:
+1) getQueuedThreads() - Returns a list of threads waiting to acquire a lock
+2) getOwner() - Returns the thread that currently owns the lock.
+3) isHeldByCurrentThread() - Queries if the lock is held by the current thread
+4) isLocked() - Queries if the lock is held by any thread
+
+
+II>> Provides lock fairness, thread reaching lock first will acquire it first-
+    ReentrantLock lock = new ReentrantLock(true); // fair
+    ReentrantLock lock = new ReentrantLock(false); // unfair (default)
+
+III>> Lock Interruptibly -
+    lockObject.lock();      --> If lock is already acquired and another Thread trying for lock will get suspended
+    ...                         Calling interrupt doesn't do anthing
+    if(Thread.currentThread().isInterrupted()){
+        cleanUpAndExit();
+    }
+
+
+    try{
+        lockObject.lockInterruptibly();     --> If lock is already acquired, another thread will be suspended but when interrupted 
+        ...                                     throws interruptedException and wakes up
+    } catch(interruptedException ie){
+        cleanUpAndExit();
+    }
+
+IV>> tryLock -
+    tryLock()
+    tryLock(long timeout, TimeUnit unit)
+
+    -Returns true and acquires a lock if available
+    -Returns false and does not get suspended, if the lock is unavailable
+    - No blocking in any case
+    
+    if(lockObject.tryLock()){
+        try{
+            useResource();
+        } finally{
+            lockObject.unlock();
+        }
+    } else{
+        ...
+    }

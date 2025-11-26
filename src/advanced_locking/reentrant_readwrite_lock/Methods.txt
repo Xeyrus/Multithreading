@@ -1,0 +1,30 @@
+ReentrantReadWriteLock rwlock = new ReentrantReadWriteLock();
+Lock readLock = rwlock.readLock();
+Lock writeLock = rwlock.writeLock();
+
+// Lock rwlock = new ReenterantReadWriteLock();
+// incorrect as ReenterantReadWriteLock is a container and not a lock itself
+
+
+writeLock.lock();
+try{
+    modifySharedResources();
+} finally {
+    writeLock.unlock();
+}
+
+
+readLock.lock();
+try{
+    readSharedResources();
+} finally {
+    readLock.unlock();
+}
+
+
+
+1) Multiple threads can acquire readLock simulataneously (Reads don't block each other)
+2) Only a single thread is allowed to lock a writeLock
+3) Mutual exclusion between readers and writers
+    - If a writeLock is acquired, no thread can acquire a readLock
+    - If at least one thread is holding a readLock, no thread can acquire a writeLock

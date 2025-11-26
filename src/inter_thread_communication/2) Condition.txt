@@ -1,0 +1,63 @@
+*** Communication till now:
+1) Thread.interrupt
+2) Thread.join
+3) Semaphore.acquire(Blocked) and release from other thread
+    (It is paticular case of Condition, checks whether number of permits > 0)
+
+*** Condition variable : Generic way for inter thread communication
+
+=> Creation - Always assocoated with a lock, lock is used to make sure checking the condition
+                and modifying the shared resource used in condition is atomic
+
+Ex: 
+    Lock lock = new ReenterantLock();
+    Condition condition = lock.newCondition();
+
+------------------------------------------------------------------------------------
+
+Producer Consumer: One UI thread - Get us pair of input variable username and password
+                   Second DB thread - Check in db is username and password is correct
+
+Lock lock = new ReenterantLock();
+Condition condition = lock.newCondition();
+String username = null, password = null;
+
+DB Thread: 
+        lock.lock();
+        try{
+            while(username == null || password == null){
+                condition.await();   // Puts thread to sleep until another thread signals condition is met
+                                     // unlocks lock atomically, and puts thread to sleep
+                                     // Now user thread can acquire the lock as it is released from here
+            }
+        } finally{
+            lock.unlock();
+        }
+        doStuff();                  // DB check
+
+UI Thread:
+        lock.lock();                // This thread acuires lock after DB thread
+        try{
+            username = usetTextBox.getText();
+            password = passwordTextBox.getText();
+            condition.signal();     // Notify waiting thread(DB threads) that condition is met
+        } finally{
+            lock.unlock();          // Despite notifying DB thread won't acquire lock until UI thread releases it
+        }
+
+
+---------------------------------------------------------------------------------------
+*** Methods:
+1) void await : unlocks lock, wait until signalled
+2) long awaitNanos(long nanosTimeout)
+3) boolean awaitUntil(Date deadline)
+
+4) void signal() : Notify only one waiting thread that condition is met, other threads waiting will keep on waiting
+                    Thread waiting has to reacuire the lock associated with condtion variable.
+                    If no thread waiting , the no thread is signalled.
+                    (Semaphore - if we release() a semaphore without any thread currently waiting, 
+                    the permit is stored, and any future acquire() will immediately succeed.)
+5) void signalAll() : Notify all waiting threads that condition is met
+                    Doesn't need to how many threads are wating on condition variable. 
+                    (Semaphore - release as many time no of threads waiting)
+

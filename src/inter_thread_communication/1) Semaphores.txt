@@ -1,0 +1,98 @@
+*** Semaphore : Permit issuing and enforcing authority. 
+                Can be used to restrict no. of users to a particular resource
+                Ex: Parking lot with 8 spots -> 8 permits
+
+=> Semaphore semaphore = new Semaphore(NUMBER_OF_PERMITS);
+semaphore.acquire(); // NUMBER_OF_PERMITS-1 now available
+useResource();
+
+=> semaphore.acquire(5); // NUMBER_OF_PERMITS-5 now available
+useResource();
+semaphore.release(5); // NUMBER_OF_PERMITS+5 now available
+
+=> If no permits available:
+semaphore.acquire(); // Thread is blocked
+
+--------------------------------------------------------------------------
+
+*** Semaphore vs Locks
+
+=> Similarity:
+   Similar to lock with 1 permit to give
+
+Ex: Semaphore semaphore = new Semaphore(1);
+semaphore.acquire(); // Lock
+useResource();
+semaphore.release(); // Unlock
+
+=> Difference:
+   1) Semaphore have no notion of owner thread. Many threads can acquire permmit.
+   2) The same thread can acquire semaphore multiple times.(Binary semaphore{initialized with 1} is not rentrant)
+   Ex:
+        Semaphore semaphore = new Semaphore(1);
+
+        void function1(){
+            semaphore.acquire();
+            semaphore.acquire(); // Thread is blocked. Would require other thread to release semaphore
+        }
+
+    3) Semaphore can be released by any thread, even by thread that has not acquired it.
+    Can lead to releasing the acquired semaphore and resource sharing can happen in critical section.(Problematic).
+    Other lock allow only thread that has acquired it to unlock.
+
+-------------------------------------------------------------------
+*** Semaphore -> Producer Consumer
+
+Due to inter thread communication in semaphores, it is good choice for producer consumer architecture
+Ex: 1> For single producer-consumer:
+
+            (Producer)          (Consumers)
+            
+            Video Capture ──┬──> Video Recorder
+                            └──> Video Streamer
+
+
+    Semaphore full = new Semaphore(0);
+    Semaphore empty = new Semaphore(1);
+    Item item = null; // Item to be shared bw producer and consumer
+
+    Consumer:
+        while(true){
+            full.acquire(); // Wait for item to be produced
+            consumeItem(item);
+            empty.release(); // Notify producer that item has been consumed
+        }
+
+    Producer:
+        while(true){
+            empty.acquire(); // Wait for item to be consumed
+            item = produceItem();
+            full.release(); // Notify consumer that item has been produced
+        }
+
+    2>> Many producer and consumers
+
+    Semaphore full = new Semaphore(0);
+    Semaphore empty = new Semaphore(CAPACITY); // CAPACITY - Size of queue
+    Queue<Item> queue = new ArrayDeque<>();
+    Lock lock = new ReenterantLock();   // TO protect queue from concurrent access by producers and consumers
+
+    Consumer:
+        while(true){
+            full.acquire();
+            lock.lock();
+            Item item = queue.poll();
+            lock.unlock();
+            consumeItem(item);
+            empty.release();
+        }
+
+    Producer:
+        while(true){
+            Item item = produce();
+            empty.acquire();
+            lock.lock()
+            queue.offer(item);
+            lock.unlock();
+            full.release();
+        }

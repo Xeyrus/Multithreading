@@ -1,0 +1,70 @@
+*** Objects as condtion variable :
+
+=> wait(), notify() and notifyAll()
+The object class contains following methods:
+    1) public final void wait() throws InterruptedException
+    2) public final void notify()
+    3) public final void notifyAll()
+
+We can use any object as a condition variable and lock(using synchronized keyword)
+
+    1) wait() - Causes the current thread to wait until another thread wakes it up.
+                In wait state, no CPU is consumed.
+    Two ways to wake up waiting thread:
+    2) notify() - Wakes up a single waiting thread on the object(if many only one woken up arbitrarily)
+    3) notifyAll() - Wakes up all waiting threads
+
+=> To call above 3 methods, we need to acquire monitor of that object(use synchronized on the object)
+
+Ex: 
+
+    public class MySharedClass{
+        public boolean isComplete = false;
+
+        public void waitUntilComplete(){
+            synchronized(this){
+                while(isComplete == false){
+                    this.wait();
+                }
+            }
+        }
+
+        public void complete(){
+            syncronized(this){
+                isComplete = true;
+                this.notify();
+            }
+        }
+
+    }
+
+
+This is similar to condition variables but we used 
+current object as condition variable as well as the lock.
+
+Object Signalling             Condition variable
+------------------------|---------------------------
+synchronized(object){           lock.lock()
+}                               lock.unlock()
+object.wait()                   condition.await()
+object.notify                   condition.signal()
+object.notifyAll                condition.signalAll()
+
+------------------------------------------------------
+
+Best implementation as current object is the lock: 
+
+public class MySharedClass{
+        public boolean isComplete = false;
+
+        public void synchronized waitUntilComplete(){
+            while(isComplete == false){
+                wait();
+            }
+        }
+
+        public void synchronized complete(){
+            isComplete = true;
+            notify();
+        }
+    }
