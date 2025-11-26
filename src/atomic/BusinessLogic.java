@@ -2,7 +2,7 @@ package atomic;
 
 import java.util.Random;
 
-public class BusinessLogic extends Thread{
+public class BusinessLogic extends Thread {
 
     private Metrics metrics;
     private Random random = new Random();
@@ -13,17 +13,17 @@ public class BusinessLogic extends Thread{
 
     @Override
     public void run() {
-        while(true){
+        while (true) {
             long start = System.currentTimeMillis();
 
-            try{
+            try {
                 Thread.sleep(random.nextInt(10));
-            } catch (InterruptedException e){
+            } catch (InterruptedException e) {
             }
 
             long end = System.currentTimeMillis();
 
-            metrics.addSample(end-start);
+            metrics.addSample(end - start);
         }
     }
 }

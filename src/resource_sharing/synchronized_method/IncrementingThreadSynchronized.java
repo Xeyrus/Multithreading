@@ -1,6 +1,6 @@
 package resource_sharing.synchronized_method;
 
-public class IncrementingThreadSynchronized extends Thread{
+public class IncrementingThreadSynchronized extends Thread {
 
     private InventoryCounterSynchronized inventoryCounter;
 

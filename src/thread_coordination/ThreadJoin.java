@@ -16,12 +16,12 @@ public class ThreadJoin {
         }
 
         for (FactorialThread thread : threads) {
-//            thread.setDaemon(true);
+            // thread.setDaemon(true);
             thread.start();
         }
 
         for (FactorialThread thread : threads) {
-            thread.join(2000);          // Main method waits for 2 sec for all the thread sto complete
+            thread.join(2000); // Main method waits for 2 sec for all the threads to complete
         }
 
         for (int i = 0; i < inputNumbers.size(); i++) {
@@ -31,10 +31,10 @@ public class ThreadJoin {
             } else {
                 System.out.println("Calculation for number " + inputNumbers.get(i) + " still in progress");
                 factorialThread.interrupt();
-                System.out.println("Thread "+ factorialThread.getName() +" stopped prematurely for number : "+ inputNumbers.get(i));
+                System.out.println("Thread " + factorialThread.getName() + " stopped prematurely for number : "
+                        + inputNumbers.get(i));
             }
         }
-
 
     }
 }

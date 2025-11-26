@@ -2,7 +2,7 @@ package thread_stopping;
 
 import java.math.BigInteger;
 
-public class LongComputationTask implements Runnable{
+public class LongComputationTask implements Runnable {
 
     private BigInteger base;
     private BigInteger power;
@@ -14,14 +14,14 @@ public class LongComputationTask implements Runnable{
 
     @Override
     public void run() {
-        System.out.println(base+"^"+power+" = "+pow(base,power));
+        System.out.println(base + "^" + power + " = " + pow(base, power));
     }
 
-    private BigInteger pow(BigInteger base, BigInteger power){
+    private BigInteger pow(BigInteger base, BigInteger power) {
         BigInteger result = BigInteger.ONE;
 
-        for (BigInteger i = BigInteger.ZERO; i.compareTo(power)!=0 ; i=i.add(BigInteger.ONE)) {
-            if(Thread.currentThread().isInterrupted()){
+        for (BigInteger i = BigInteger.ZERO; i.compareTo(power) != 0; i = i.add(BigInteger.ONE)) {
+            if (Thread.currentThread().isInterrupted()) {
                 System.out.println("Prematurely interrupted computation");
                 return BigInteger.ZERO;
             }
@@ -32,10 +32,12 @@ public class LongComputationTask implements Runnable{
     }
 
     public static void main(String[] args) throws InterruptedException {
-        Thread thread = new Thread(new LongComputationTask(new BigInteger("21297979797"),new BigInteger("1000878779")));
-        thread.setDaemon(true);     // If we don't want to handle graceful termination of thread
+        Thread thread = new Thread(
+                new LongComputationTask(new BigInteger("21297979797"), new BigInteger("1000878779")));
+        // thread.setDaemon(true); // If we don't want to handle
+        // graceful termination of thread
         thread.start();
         Thread.sleep(5000);
-//        thread.interrupt();
+        thread.interrupt();
     }
 }

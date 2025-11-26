@@ -12,6 +12,6 @@ public class Main {
         it.join();
         dt.join();
 
-        System.out.println("We currently have "+ ic.getItems()+" items");
+        System.out.println("We currently have " + ic.getItems() + " items");
     }
 }
