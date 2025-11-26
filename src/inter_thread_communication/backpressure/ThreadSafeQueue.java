@@ -1,4 +1,4 @@
-package backpressure;
+package inter_thread_communication.backpressure;
 
 import java.util.LinkedList;
 import java.util.Queue;

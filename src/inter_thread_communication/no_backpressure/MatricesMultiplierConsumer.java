@@ -1,4 +1,4 @@
-package no_backpressure;
+package inter_thread_communication.no_backpressure;
 
 import java.io.FileWriter;
 import java.io.IOException;

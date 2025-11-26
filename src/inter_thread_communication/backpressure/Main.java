@@ -1,9 +1,10 @@
-package backpressure;
+package inter_thread_communication.backpressure;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+
 
 public class Main {
     private static final String INPUT_FILE = "./Multithreading/src/inter_thread_communication/out/matrices";
