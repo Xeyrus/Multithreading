@@ -1,0 +1,51 @@
+*** Performance benefits of Virtual Threads
+1) If Virtual Threads represent only CPU operation:
+    - No performance benefit
+    - Just an abstraction for scheduling tasks on a pool of platform threads.
+
+2) If Virtual Threads represent operations that require the thread to wait(Blocking operations, IO etc.)
+    - Very useful for performance / throughput.
+
+
+*** More benefits
+1) many blocking operations were refactored to support virtual threads like:
+    - Sleep - Thread.sleep()
+    - Locks - ReentrantLock.lock()
+    - Semaphores - Semaphore.acquire()
+    - Networking API - Socket / Diagram (TCP/UDP)
+    etc.
+
+*** Virtual threads and thread safety
+    - Everything we learned about
+        - Thread safety
+            - Race conditions
+            - Deadlocks
+            - Data races
+        - Inter thread communication
+        - Lock free algos
+    - Measures for correct execution
+    - Intuition
+
+    stay exactly same for virtual threads
+
+*** Concepts -
+1) Tasks involving only CPU - Virtual threads provide no benefit
+2) Virtual threads and latency - Provide no benefit, only performance benefit is throughput
+    (cuz can run more tasks when the cpu will be idle in blocking call)
+3) Short and frequent blocking calls - Very inefficient calls, virtual threads much better choice than platform threads
+    (cuz cost of context switch in PT > cost of mounting/unmounting in VT)
+    Possible Soln: Batch short IO operations into less frequent-long IO operations
+
+*** Best Practice -
+1) Never create fixed-size pools of virtual threads
+2) Virtual threads are always daemon threads - Application wont wait for its completion
+   (virtualThread.setDaemon(..) - Throws and exception)
+3) Virtual thread always have default priority
+   (virtualThread.setPriority(...) - Does nothing)
+
+
+*** Observability and debugging -
+- Carrier threads are hidden from us
+- Setting breakpoints/inspecting the thread state is the same as of platform threads
+- Important note:
+    - We may have thousands/millions of virtual threads, so follow all thread safety guidelines/best practice as usual

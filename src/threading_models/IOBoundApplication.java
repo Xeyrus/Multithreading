@@ -77,8 +77,21 @@ public class IOBoundApplication {
  * - As soon as there's a blocking I/O operation, OS unshedules that thread
  * - Too many threads and frequent context switches lead to CPU being busy
  * running OS code instead of application code (Thrashing)
- * 
+ * f
  * 
  * Thread per Task Model was standard for many years but not optimal for
  * performance and CPU utilization.
+ */
+
+/* Problems with Threads-per-Task model:
+    1) Doesn't give optimal performance when -
+        - A thread is blocking on IO, it can't be used
+        - Requires us to allocate more threads
+        - Consuming more resources
+        - Adding context-switch overhead
+    2) Stability issues due to inversion of control
+ */
+
+/*
+ The above problems are solved bt Thread-per-core model + Non Blocking IO
  */
